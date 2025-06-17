@@ -47,10 +47,10 @@ Follow the steps below to run the project locally on your machine:
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/shpoerzstop.git
+git clone https://github.com/Adityasgithubtech/shopperz-stop.git
 
 # Navigate to the client folder
-cd shpoerzstop/client
+cd client
 
 # Install all dependencies
 npm install
