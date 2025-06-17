@@ -46,3 +46,8 @@ Follow the steps below to set up the project locally:
 
 ```bash
 git clone https://github.com/Adityasgithubtech/Shopperz-stop.git
+
+### 📂 2. Navigate to the Project Directory
+
+```bash
+cd client
