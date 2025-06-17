@@ -29,8 +29,5 @@ export default [
         { allowConstantExport: true },
       ],
     },
-    'extends': [
-    'plugin:react/recommended'
-]
   },
 ]
