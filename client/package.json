@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
     "lint": "eslint .",
+    "build": "VITE_DISABLE_ESLINT=true vite build",
     "preview": "vite preview"
   },
   "dependencies": {
