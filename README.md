@@ -38,23 +38,34 @@ Ensure the following tools are installed before you begin:
 
 ---
 
+## 📦 Dependencies
 
-## 🔧 Setup
+The project uses the following major dependencies:
 
-Follow the steps below to run the project locally on your machine:
+- `react`
+- `react-dom`
+- `react-router-dom`
+- `react-icons`
+- `tailwindcss`
+- `postcss`
+- `autoprefixer`
+- `vite`
 
-### 1. Clone and Set Up the Project
+---
 
-```bash
-# Clone the repository
-git clone https://github.com/Adityasgithubtech/shopperz-stop.git
 
-# Navigate to the client folder
-cd client
+## 📝 License
 
-# Install all dependencies
-npm install
+This project is licensed under the **MIT License**.
 
-# Initialize TailwindCSS (if not already initialized)
-npx tailwindcss init -p
+---
+
+## 🙋‍♂️ Author
+
+**Aditya Jadhav**  
+Java Fullstack Developer | MERN Stack Enthusiast
+
+- 🔗 [GitHub](https://github.com/your-username)
+- 🔗 [LinkedIn](https://www.linkedin.com/in/your-linkedin/)
+
 
