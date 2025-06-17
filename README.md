@@ -38,16 +38,23 @@ Ensure the following tools are installed before you begin:
 
 ---
 
+
 ## 🔧 Setup
 
-Follow the steps below to set up the project locally:
+Follow the steps below to run the project locally on your machine:
 
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/Adityasgithubtech/Shopperz-stop.git
-
-### 📂 2. Navigate to the Project Directory
+### 1. Clone and Set Up the Project
 
 ```bash
-cd client
+# Clone the repository
+git clone https://github.com/your-username/shpoerzstop.git
+
+# Navigate to the client folder
+cd shpoerzstop/client
+
+# Install all dependencies
+npm install
+
+# Initialize TailwindCSS (if not already initialized)
+npx tailwindcss init -p
+
