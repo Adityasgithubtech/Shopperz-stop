@@ -2,28 +2,14 @@ import { createContext, useContext, useState } from 'react';
 
 const FilterContext = createContext();
 
-export function FilterProvider({ children }) {
-  const [filter, setFilter] = useState({
-    query: '',
-    category: '',
-    minPrice: 0,
-    maxPrice: 2000,
-  });
-
-  const clearFilters = () => {
-    setFilter({
-      query: '',
-      category: '',
-      minPrice: 0,
-      maxPrice: 2000,
-    });
-  };
+export const FilterProvider = ({ children }) => {
+  const [filter, setFilter] = useState({});
 
   return (
-    <FilterContext.Provider value={{ filter, setFilter, clearFilters }}>
+    <FilterContext.Provider value={{ filter, setFilter }}>
       {children}
     </FilterContext.Provider>
   );
-}
+};
 
 export const useFilter = () => useContext(FilterContext);

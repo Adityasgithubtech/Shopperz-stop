@@ -1,41 +1,44 @@
+import { useState } from 'react';
 import { useFilter } from '../context/FilterContext';
 
 export default function FilterPanel() {
-  const { filter, setFilter } = useFilter();
+  const { setFilter } = useFilter();
+  
+  // Local state for inputs
+  const [category, setCategory] = useState('');
 
-  const handleSearchChange = (e) => {
-    setFilter(prev => ({ ...prev, query: e.target.value }));
-  };
-
-  const handlePriceChange = (e) => {
-    setFilter(prev => ({ ...prev, price: Number(e.target.value) }));
+  const handleApplyFilter = () => {
+    const newFilter = {};
+    if (category.trim() !== '') {
+      newFilter.category = category.trim();
+    }
+    setFilter(newFilter); // update context when button clicked
   };
 
   return (
-    <div className="flex gap-4 flex-wrap mb-4">
-      <input
-        type="text"
-        placeholder="Search products..."
-        value={filter.query}
-        onChange={handleSearchChange}
-        className="border px-4 py-2 rounded w-full sm:w-1/2"
-      />
+    <div className="w-1/3 p-4 border-r border-gray-200">
+      <h2 className="text-lg font-semibold mb-4">Filter Products</h2>
 
-      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
-        <label htmlFor="priceRange" className="text-sm font-medium">
-          Max Price: ${filter.price}
+      <div className="mb-4">
+        <label htmlFor="category" className="block mb-1 font-medium">
+          Category
         </label>
         <input
-          id="priceRange"
-          type="range"
-          min="0"
-          max="2000"
-          step="50"
-          value={filter.price}
-          onChange={handlePriceChange}
-          className="w-48"
+          type="text"
+          id="category"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-bittersweet_shimmer-500"
+          placeholder="e.g. smartphones"
         />
       </div>
+
+      <button
+        onClick={handleApplyFilter}
+        className="w-full bg-bittersweet_shimmer-500 text-white px-4 py-2 rounded hover:bg-bittersweet_shimmer-600 transition"
+      >
+        Apply Filter
+      </button>
     </div>
   );
 }

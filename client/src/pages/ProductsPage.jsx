@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import FilterPanel from '../components/FilterPanel';
 import ProductCard from '../components/ProductCard';
 import { useFilter } from '../context/FilterContext';
@@ -6,102 +6,77 @@ import { useFilter } from '../context/FilterContext';
 export default function ProductsPage() {
   const { filter } = useFilter();
   const [products, setProducts] = useState([]);
+  const [displayedProducts, setDisplayedProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
 
-  const observerRef = useRef();
-  const productsPerPage = 20;
+  const PRODUCTS_PER_PAGE = 20;
 
-  const fetchProducts = useCallback(async () => {
+  const fetchProducts = async (currentPage) => {
     setLoading(true);
-    setError('');
-
     try {
-      const skip = (page - 1) * productsPerPage;
-      const url = filter.query
-        ? `https://dummyjson.com/products/search?q=${filter.query}&limit=${productsPerPage}&skip=${skip}`
-        : `https://dummyjson.com/products?limit=${productsPerPage}&skip=${skip}`;
-
-      const response = await fetch(url);
-      if (!response.ok) throw new Error('Failed to fetch products');
-
+      const skip = currentPage * PRODUCTS_PER_PAGE;
+      const response = await fetch(`https://dummyjson.com/products?limit=${PRODUCTS_PER_PAGE}&skip=${skip}`);
       const data = await response.json();
 
-      const filtered = data.products.filter(p => p.price <= filter.price);
-
-      setProducts(prev => [...prev, ...filtered]);
-      setHasMore(filtered.length > 0);
+      if (data.products.length === 0) {
+        setHasMore(false);
+      } else {
+        setProducts(prev => [...prev, ...data.products]);
+      }
     } catch (err) {
-      setError(err.message);
+      setError('Failed to load products');
     } finally {
       setLoading(false);
     }
-  }, [filter, page]);
+  };
 
-  // Fetch when page changes
   useEffect(() => {
-    fetchProducts();
-  }, [page, fetchProducts]);
+    fetchProducts(page);
+  }, [page]);
 
-  // Reset products if filter changes
   useEffect(() => {
-    setProducts([]);
-    setPage(1);
-    setHasMore(true);
-  }, [filter]);
+    if (!filter || Object.keys(filter).length === 0) {
+      setDisplayedProducts(products);
+    } else {
+      const filtered = products.filter(product =>
+        filter.category ? product.category === filter.category : true
+      );
+      setDisplayedProducts(filtered);
+    }
+  }, [filter, products]);
 
-  // Infinite scroll observer
-  const observerElement = useCallback(
-    node => {
-      if (loading) return;
-      if (observerRef.current) observerRef.current.disconnect();
+  const handleScroll = useCallback(() => {
+    const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+    if (scrollTop + clientHeight >= scrollHeight - 100 && hasMore && !loading) {
+      setPage(prev => prev + 1);
+    }
+  }, [hasMore, loading]);
 
-      observerRef.current = new IntersectionObserver(entries => {
-        if (entries[0].isIntersecting && hasMore) {
-          setPage(prev => prev + 1);
-        }
-      });
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [handleScroll]);
 
-      if (node) observerRef.current.observe(node);
-    },
-    [loading, hasMore]
-  );
+  if (loading && page === 0) return <p className="text-center">Loading...</p>;
+  if (error) return <p className="text-center text-red-500">{error}</p>;
 
   return (
-    <div className="max-w-7xl mx-auto p-4">
-      <h1 className="text-center text-5xl font-extrabold mb-6 tracking-tight">
-        <span className="uppercase text-8xl font-logo tracking-wide" style={{ color: '#2D3142' }}>
-          Shopperz
-        </span>
-        <span className="ml-2 italic text-gray-500">Stop</span>
-      </h1>
-
+    <div className="flex">
       <FilterPanel />
-
-      {error && <p className="text-center text-red-500">{error}</p>}
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-6">
-        {products.map((product, index) => {
-          if (products.length === index + 1) {
-            return (
-              <div key={product.id} ref={observerElement}>
-                <ProductCard product={product} />
-              </div>
-            );
-          } else {
-            return <ProductCard key={product.id} product={product} />;
-          }
-        })}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+        {displayedProducts.length > 0 ? (
+          displayedProducts.map(product => (
+            <ProductCard key={product.id} product={product} />
+          ))
+        ) : (
+          <p className="col-span-full text-center text-gray-500">No products found</p>
+        )}
+        {loading && <p className="col-span-full text-center">Loading more products...</p>}
+        {!hasMore && <p className="col-span-full text-center text-gray-400">No more products</p>}
       </div>
-
-      {loading && (
-        <p className="text-center text-lg mt-10 animate-pulse">Loading more products...</p>
-      )}
-      {!hasMore && !loading && (
-        <p className="text-center text-sm text-gray-500 mt-6">No more products to show.</p>
-      )}
     </div>
   );
 }
