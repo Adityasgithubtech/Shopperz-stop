@@ -8,10 +8,12 @@ export default function ProductCard({ product }) {
   const [isClicked, setIsClicked] = useState(false);
 
   const handleAddToCart = () => {
-    addToCart(product);
-    setIsClicked(true);
-    setTimeout(() => setIsClicked(false), 2000); // Reset after 2s
-  };
+  addToCart(product);
+  alert(`${product.title} has been added to your cart!`);
+  setIsClicked(true);
+  setTimeout(() => setIsClicked(false), 2000);
+};
+
 
   return (
     <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition transform hover:-translate-y-1">
@@ -57,7 +59,7 @@ export default function ProductCard({ product }) {
         </button>
 
         <Link
-          to={`/products/${product.id}`}
+          to={`/product/${product.id}`}  // ✅ Fixed path
           className="mt-2 w-full text-center block px-4 py-2 rounded text-sm font-medium text-bittersweet_shimmer-600 border border-bittersweet_shimmer-500 hover:bg-bittersweet_shimmer-50 transition"
         >
           View Details
